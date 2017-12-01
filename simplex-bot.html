@@ -8,6 +8,8 @@
 <link rel="import" href="speech-mic.html">
 <link rel="import" href="display-fact.html">
 <link rel="import" href="display-donut.html">
+<link rel="import" href="display-me.html">
+<link rel="import" href="display-ai.html">
 
 
 <dom-module id="simplex-bot">
@@ -22,22 +24,28 @@
       .input {
         @apply --layout-horizontal;
       }
-      .flex{
+
+      .flex {
         @apply --layout-flex;
       }
 
       #bot {
+        position: relative;
         @apply --layout-flex;
         overflow: scroll;
       }
 
-      #bot > *{
+      #bot > * {
+        width: inherit;
         margin-bottom: 12px;
+      }
+      .placeholder{
+        height: 100%;
       }
     </style>
 
     <div id="bot">
-
+      <div class="placeholder"></div>
     </div>
     <div class="input">
       <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
@@ -92,7 +100,7 @@
            * @event request-mega
            */
           let customEvent = new Event('request-mega', {composed: true, bubbles: true});
-          this.dispatchEvent(customEvent)
+          this.dispatchEvent(customEvent);
 
           break;
 
@@ -101,17 +109,17 @@
           customElement = document.createElement('display-donut');
           this.$.bot.appendChild(customElement);
           customElement.set("data", response.msg.data);
-            
-          this.say(response.msg);
+
+          this.say(response);
           break;
 
         case 'time':
 
-          this.say(response.msg);
+          this.say(response);
           break;
 
         default:
-          this.say(response.msg)
+          this.say(response)
       }
 
       Polymer.RenderStatus.afterNextRender(this, () => {
@@ -125,9 +133,19 @@
         this.$.bot.removeChild(v)
       }
     }
-    
-    say(msg){
-      this.$.say.set('text', msg.text)
+
+    say(response) {
+      console.log(response)
+      this.$.say.set('text', response.msg.text);
+      var customElement;
+
+      switch (response.type){
+        case 'time':{
+          customElement = document.createElement('display-ai');
+          this.$.bot.appendChild(customElement);
+          customElement.set("text", response.msg.text);
+        }
+      }
     }
   }
 
