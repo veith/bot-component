@@ -1,0 +1,45 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+
+<dom-module id="display-me">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    -> [[text]]
+
+  </template>
+</dom-module>
+
+
+<script>
+    /**
+     * `display-me`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class DisplayMe extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();
+        }
+
+        static get is() {
+            return 'display-me';
+        }
+        static get properties() {
+            return {
+              text:String
+            }
+        }
+    }
+
+    window.customElements.define(DisplayMe.is, DisplayMe);
+
+</script>

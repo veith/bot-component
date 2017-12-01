@@ -1,0 +1,45 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+
+<dom-module id="display-ai">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    [[text]] <--
+
+  </template>
+</dom-module>
+
+
+<script>
+    /**
+     * `display-ai`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class DisplayAi extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();
+        }
+
+        static get is() {
+            return 'display-ai';
+        }
+        static get properties() {
+            return {
+              text:String
+            }
+        }
+    }
+
+    window.customElements.define(DisplayAi.is, DisplayAi);
+
+</script>

@@ -1,0 +1,58 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+<link rel="import" href="../alu-charts/chart-donut.html">
+<link rel="import" href="../alu-charts/chart-legend.html">
+
+
+<dom-module id="display-donut">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      chart-donut {
+        padding: 0 25%;
+      }
+
+      chart-legend {
+        text-align: center;
+      }
+    </style>
+    <chart-donut data="[[data]]" selected-index="{{idx}}"></chart-donut>
+    <chart-legend data="[[data]]" selected-index="{{idx}}"></chart-legend>
+
+
+  </template>
+</dom-module>
+
+
+<script>
+  /**
+   * `display-donut`
+   *
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * @mixes FBPMixin
+   */
+  class DisplayDonut extends FBPMixin(Polymer.Element) {
+    constructor() {
+      super();
+    }
+
+    static get is() {
+      return 'display-donut';
+    }
+
+    static get properties() {
+      return {
+        data: Object
+      }
+    }
+  }
+
+  window.customElements.define(DisplayDonut.is, DisplayDonut);
+
+</script>

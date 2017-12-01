@@ -1,11 +1,13 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../flowbased-polymer/mixin.html">
 <link rel="import" href="../google-youtube/google-youtube.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="bot-component.html">
 <link rel="import" href="say-something.html">
 <link rel="import" href="speech-mic.html">
 <link rel="import" href="display-fact.html">
-<link rel="import" href="../alu-charts/chart-donut.html">
+<link rel="import" href="display-donut.html">
 
 
 <dom-module id="simplex-bot">
@@ -14,18 +16,34 @@
       :host {
         display: block;
         height: 100%;
+        @apply --layout-vertical;
+      }
+
+      .input {
+        @apply --layout-horizontal;
+      }
+      .flex{
+        @apply --layout-flex;
+      }
+
+      #bot {
+        @apply --layout-flex;
+        overflow: scroll;
+      }
+
+      #bot > *{
+        margin-bottom: 12px;
       }
     </style>
 
     <div id="bot">
-      <div class="bubble you">Good Evening!</div>
-      <div class="bubble me">which pet is this</div>
-      <div class="bubble you">I'm sorry, I didn't understand that.</div>
+
     </div>
-    <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
-    [[txt]]
-    <hr>
-    [[response.msg.text]]
+    <div class="input">
+      <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
+      <paper-input class="flex" value="[[txt]]"></paper-input>
+    </div>
+
 
     <bot-component ƒ-query="-texteingabe" response="{{response}}" on-response-changed="_parse"></bot-component>
     <say-something id="say"></say-something>
@@ -62,48 +80,51 @@
         case 'song':
           var v, customElement;
           //entferne
-          v = this.shadowRoot.querySelector('google-youtube');
-          if (v != undefined) {
-            this.$.bot.removeChild(v)
-            console.log(v)
-          }
+          this.clear('google-youtube')
           customElement = document.createElement('google-youtube');
           customElement.setAttribute("autoplay", true);
           customElement.setAttribute("video-id", response.msg.id);
           this.$.bot.appendChild(customElement);
 
           /**
-          * Fired when
-          * detail payload:
-          * @event request-mega
-          */
-          let customEvent = new Event('request-mega', {composed:true, bubbles: true});
+           * Fired when
+           * detail payload:
+           * @event request-mega
+           */
+          let customEvent = new Event('request-mega', {composed: true, bubbles: true});
           this.dispatchEvent(customEvent)
 
           break;
 
         case 'selbstbehalt':
-          v = this.shadowRoot.querySelector('chart-donut');
-          if (v != undefined) {
-            this.$.bot.removeChild(v)
-            console.log(v)
-          }
-          customElement = document.createElement('chart-donut');
+
+          customElement = document.createElement('display-donut');
           this.$.bot.appendChild(customElement);
           customElement.set("data", response.msg.data);
-          console.log(response.msg.data)
-          this.$.say.set('text', response.msg.text);
+            
+          this.say(response.msg);
           break;
 
         case 'time':
 
-          this.$.say.set('text', response.msg.text);
+          this.say(response.msg);
           break;
 
         default:
-          this.$.say.set('text', response.msg.text)
+          this.say(response.msg)
       }
 
+    }
+
+    clear(element) {
+      let v = this.shadowRoot.querySelector(element);
+      if (v != undefined) {
+        this.$.bot.removeChild(v)
+      }
+    }
+    
+    say(msg){
+      this.$.say.set('text', msg.text)
     }
   }
 

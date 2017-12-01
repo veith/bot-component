@@ -5,7 +5,9 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "flowbased-polymer": "^2.3.2",
-    "google-youtube": "^2.0.0"
+    "google-youtube": "^2.0.0",
+    "iron-flex-layout": "^2.0.1",
+    "paper-input": "^2.0.4"
   },
   "devDependencies": {
     "iron-demo-helpers": "^2.0.0",
