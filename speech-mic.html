@@ -1,0 +1,279 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`speech-mic` Ist eine einfache Implementierung der WebSpeech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html) für Polymer 1.4+ .
+
+Sie bietet eine einfache Texterkennung. Zwischenresultate werden nicht mit ausgegeben.
+
+Das Icon, Layout und CSS ist komplett von https://github.com/PolymerLabs/speech-mic übernommen
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="speech-mic">
+  <template>
+    <style>
+
+      :host {
+        display: inline-block;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+
+      .mic-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .mic-container.recognizing {
+        z-index: 10;
+      }
+
+      .icon {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .icon > svg {
+        display: block;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+      }
+
+      .recognizing > .icon {
+        background-color: #d23f31;
+        fill: #fff;
+        box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      .ring {
+        display: none;
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        border-radius: 100%;
+      }
+
+      .recognizing > .ring {
+        display: block;
+        background-color: rgba(0, 0, 0, 0.1);
+        -webkit-animation: ring 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+      }
+
+      @-webkit-keyframes ring {
+        0% {
+          -webkit-transform: scale(0.5);
+        }
+        40% {
+          -webkit-transform: scale(0.8);
+        }
+        100% {
+          -webkit-transform: scale(1);
+        }
+      }
+
+      .ring2 {
+        display: none;
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        border-radius: 100%;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .recognizing > .ring2 {
+        display: block;
+        -webkit-animation: ring2 1.5s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+      }
+
+      @-webkit-keyframes ring2 {
+        0% {
+          -webkit-transform: scale(0.3);
+        }
+        40% {
+          -webkit-transform: scale(0.5);
+        }
+        100% {
+          -webkit-transform: scale(1);
+        }
+      }
+    </style>
+
+    <div id="micContainer" class$="mic-container {{_onAir}}" on-tap="_toggle">
+      <div class="ring"></div>
+      <div class="ring2"></div>
+      <div class="icon">
+        <svg viewBox="0 0 24 24" height="100%" width="100%" preserveAspectRatio="xMidYMid meet">
+          <g>
+            <path d="M12,14c1.7,0,3-1.3,3-3l0-6c0-1.7-1.3-3-3-3c-1.7,0-3,1.3-3,3v6C9,12.7,10.3,14,12,14z M17.3,11c0,3-2.5,5.1-5.3,5.1c-2.8,0-5.3-2.1-5.3-5.1H5c0,3.4,2.7,6.2,6,6.7V21h2v-3.3c3.3-0.5,6-3.3,6-6.7H17.3z"></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+
+  </template>
+
+  <script>
+
+
+    Polymer({
+
+      is: 'speech-mic',
+      properties: {
+        /**
+         * Sprache für die Texterkennung
+         *
+         * Von Chrome 51+ unterstützte Sprachen sind:
+         *
+         * 'af-ZA', 'id-ID', 'ms-MY', 'ca-ES', 'cs-CZ', 'de-DE', 'en-US', 'en-AU', 'en-CA', 'en-IN', 'en-NZ', 'en-ZA', 'en-GB', 'es-AR', 'es-BO', 'es-CL', 'es-CO', 'es-CR', 'es-EC', 'es-SV', 'es-ES', 'es-US', 'es-GT', 'es-HN', 'es-MX', 'es-NI', 'es-PA', 'es-PY', 'es-PE', 'es-PR', 'es-DO', 'es-UY', 'es-VE', 'eu-ES', 'fr-FR', 'gl-ES', 'hr_HR', 'zu-ZA', 'is-IS', 'it-IT', 'it-CH', 'hu-HU', 'nl-NL', 'nb-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO', 'sk-SK', 'fi-FI', 'sv-SE', 'tr-TR', 'bg-BG', 'ru-RU', 'sr-RS', 'ko-KR', 'zh-cmn-Hans-CN', 'cmn-Hans-CN', 'cmn-Hans-HK', 'cmn-Hant-TW', 'yue-Hant-HK', 'ja-JP', 'la'
+         *
+         */
+        language: {
+          type: String,
+          value: "de-DE"
+        },
+        /**
+         * Zeigt an ob die Texterkennung aktiv ist
+         */
+        recognizing: {
+          type: Boolean,
+          readOnly: true,
+          notify: true,
+          value: false
+        },
+        /**
+         * Gesammter erkannter Text einer Aufnahme.
+         */
+        completeTranscript: {
+          type: String,
+          readOnly: true,
+          notify: true
+        },
+        /**
+         * Erkanntes Wort / Satz
+         */
+        transcript: {
+          type: String,
+          readOnly: true,
+          notify: true
+        },
+        /**
+         * Aufnahme nach erkanntem Wort / Satz beenden
+         */
+        continuous: {
+          type: Boolean,
+          value: false
+        },
+        _onAir: {
+          type: String,
+          computed: '_isRecognizing(recognizing)'
+        }
+      },
+
+      created: function () {
+        var SpeechRecognition = window.SpeechRecognition ||
+            window.webkitSpeechRecognition ||
+            window.mozSpeechRecognition ||
+            window.msSpeechRecognition ||
+            window.oSpeechRecognition;
+
+        if (SpeechRecognition !== undefined) {
+          this.recognition = new SpeechRecognition();
+        }
+        else {
+          console.error('Your browser does not support the Web Speech API');
+        }
+      },
+      ready: function () {
+        this.recognition.continuous = this.continuous;
+
+        this.recognition.interimResults = true;
+        this.recognition.lang = this.language;
+        // keine Zwischenresultate
+        this.recognition.interimResults = false;
+        this.recognition.onstart = this.start.bind(this);
+        this.recognition.onend = this._end.bind(this);
+        this.recognition.onresult = this._result.bind(this);
+        this.recognition.onerror = this.error.bind(this);
+
+      },
+
+
+      start: function (e) {
+        this._setRecognizing(true);
+      },
+
+      _end: function () {
+        this._setRecognizing(false);
+      },
+
+      stop: function () {
+        this.recognition && this.recognition.stop();
+      },
+
+      _result: function (e) {
+
+        var t, ct = '', isFinal;
+        for (var i = 0, r; r = e.results[i]; i++) {
+          t = r[0] && r[0].transcript || '';
+          ct += t;
+          isFinal = r.isFinal;
+        }
+        this._setTranscript(t);
+        this._setCompleteTranscript(ct);
+
+
+        /**
+         * Fired when transcript complete
+         * detail payload: data
+         * @event speech-mic-result
+         */
+        let customEvent = new Event('speech-mic-result', {composed: true, bubbles: true});
+        customEvent.detail = {
+          results: e.results,
+          transcript: t,
+          completeTranscript: ct,
+          isFinal: isFinal
+        };
+        this.dispatchEvent(customEvent)
+
+      },
+
+      error: function (e) {
+        console.log(e);
+      },
+
+      _toggle: function () {
+        if (!this.recognizing) {
+          this.recognition.start();
+        } else {
+          this.recognition.stop();
+        }
+
+      },
+      _isRecognizing: function () {
+        return this.recognizing ? 'recognizing' : '';
+      }
+
+    });
+  </script>
+</dom-module>

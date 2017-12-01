@@ -1,0 +1,43 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/flowbased-polymer/mixin.html">
+
+<dom-module id="display-time">
+  <template>
+    <style>
+      :host {
+        display: block;     
+      } 
+    </style>
+
+    hi
+
+  </template>
+</dom-module>
+
+
+<script>
+    /**
+     * `display-time`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class DisplayTime extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();       
+        }
+
+        static get is() {
+            return 'display-time';
+        }
+        static get properties() {
+            return {}
+        }
+    }
+
+    window.customElements.define(DisplayTime.is, DisplayTime);
+
+</script>

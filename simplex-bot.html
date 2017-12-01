@@ -1,0 +1,92 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+<link rel="import" href="../google-youtube/google-youtube.html">
+<link rel="import" href="bot-component.html">
+<link rel="import" href="say-something.html">
+<link rel="import" href="speech-mic.html">
+<link rel="import" href="display-fact.html">
+<link rel="import" href="display-time.html">
+
+
+<dom-module id="simplex-bot">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+      }
+    </style>
+
+    <div id="bot">
+      <div class="bubble you">Good Evening!</div>
+      <div class="bubble me">which pet is this</div>
+      <div class="bubble you">I'm sorry, I didn't understand that.</div>
+    </div>
+    <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
+    [[txt]]
+    <hr>
+    [[response.msg.text]]
+
+    <bot-component ƒ-query="-texteingabe" response="{{response}}" on-response-changed="_parse"></bot-component>
+    <say-something id="say"></say-something>
+  </template>
+</dom-module>
+
+
+<script>
+  /**
+   * `simplex-bot`
+   *
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * @mixes FBPMixin
+   */
+  class SimplexBot extends FBPMixin(Polymer.Element) {
+    constructor() {
+      super();
+    }
+
+    static get is() {
+      return 'simplex-bot';
+    }
+
+    static get properties() {
+      return {}
+    }
+
+    _parse(e) {
+
+      switch (response.type) {
+        case 'song':
+
+          //entferne
+          let v = this.shadowRoot.querySelector('google-youtube');
+          if (v != undefined) {
+            this.$.bot.removeChild(v)
+            console.log(v)
+          }
+          var customElement = document.createElement('google-youtube');
+          customElement.setAttribute("autoplay", true);
+          customElement.setAttribute("video-id", response.msg.id);
+          this.$.bot.appendChild(customElement)
+          break;
+
+        case 'time':
+          var customElement = document.createElement('display-time');
+          this.$.bot.appendChild(customElement)
+          this.$.say.set('text', response.msg.text)
+          break;
+        default:
+          this.$.say.set('text', response.msg.text)
+      }
+      let response = e.detail.value;
+
+
+    }
+  }
+
+  window.customElements.define(SimplexBot.is, SimplexBot);
+
+</script>

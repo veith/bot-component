@@ -1,0 +1,56 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="bot-component">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+
+    <iron-ajax id="xhr"  url="http://localhost:4567/api/ask" params="[[params]]"
+               last-response="{{response}}" timeout="2000"></iron-ajax>
+  </template>
+
+  <script>
+
+
+    /**
+     * `bot-component`
+     * connects to simplex-bot
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BotComponent extends FBPMixin(Polymer.Element) {
+      static get is() {
+        return 'bot-component';
+      }
+
+      static get properties() {
+        return {
+          headers: Object,
+          params: Object,
+          response:{type:Object, notify:true}
+        }
+
+      }
+
+      query(q){
+        this.set('params',{"q":q.completeTranscript});
+        this.$.xhr.generateRequest()
+      }
+      ready() {
+        super.ready();
+      }
+    }
+
+
+    window.customElements.define(BotComponent.is, BotComponent);
+  </script>
+</dom-module>
+

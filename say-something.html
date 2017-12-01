@@ -1,0 +1,42 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+
+
+<script>
+    /**
+     * `say-something`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class SaySomething extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();
+        }
+
+        static get is() {
+            return 'say-something';
+        }
+        static get properties() {
+            return {
+              text:{type:String,observer:'speak'}
+            }
+        }
+
+        ready(){
+          super.ready();
+          this.utterance = new SpeechSynthesisUtterance();
+          this.utterance.lang = 'de'; //Sprache auf Deutsch festlegen
+        }
+        speak(text){
+          this.utterance.text = text;
+          speechSynthesis.speak(this.utterance);
+        }
+    }
+
+    window.customElements.define(SaySomething.is, SaySomething);
+
+</script>

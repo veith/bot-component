@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/flowbased-polymer/mixin.html">
+
+<dom-module id="display-fact">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    [[text]]
+
+  </template>
+</dom-module>
+
+
+<script>
+    /**
+     * `display-fact`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class DisplayFact extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();
+        }
+
+        static get is() {
+            return 'display-fact';
+        }
+        static get properties() {
+            return {
+              text:String
+            }
+        }
+    }
+
+    window.customElements.define(DisplayFact.is, DisplayFact);
+
+</script>
