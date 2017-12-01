@@ -57,7 +57,7 @@
     }
 
     _parse(e) {
-
+      let response = e.detail.value;
       switch (response.type) {
         case 'song':
 
@@ -70,7 +70,7 @@
           var customElement = document.createElement('google-youtube');
           customElement.setAttribute("autoplay", true);
           customElement.setAttribute("video-id", response.msg.id);
-          this.$.bot.appendChild(customElement)
+          this.$.bot.appendChild(customElement);
           break;
 
         case 'time':
@@ -78,10 +78,11 @@
           this.$.bot.appendChild(customElement)
           this.$.say.set('text', response.msg.text)
           break;
+
         default:
           this.$.say.set('text', response.msg.text)
       }
-      let response = e.detail.value;
+
 
 
     }
