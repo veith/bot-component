@@ -60,17 +60,26 @@
       let response = e.detail.value;
       switch (response.type) {
         case 'song':
-var v,customElement;
+          var v, customElement;
           //entferne
-            v = this.shadowRoot.querySelector('google-youtube');
+          v = this.shadowRoot.querySelector('google-youtube');
           if (v != undefined) {
             this.$.bot.removeChild(v)
             console.log(v)
           }
-           customElement = document.createElement('google-youtube');
+          customElement = document.createElement('google-youtube');
           customElement.setAttribute("autoplay", true);
           customElement.setAttribute("video-id", response.msg.id);
           this.$.bot.appendChild(customElement);
+
+          /**
+          * Fired when
+          * detail payload:
+          * @event request-mega
+          */
+          let customEvent = new Event('request-mega', {composed:true, bubbles: true});
+          this.dispatchEvent(customEvent)
+
           break;
 
         case 'selbstbehalt':
