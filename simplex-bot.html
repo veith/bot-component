@@ -114,6 +114,9 @@
           this.say(response.msg)
       }
 
+      Polymer.RenderStatus.afterNextRender(this, () => {
+        this.$.bot.scrollTop = this.$.bot.scrollHeight;
+      });
     }
 
     clear(element) {
