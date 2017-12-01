@@ -5,7 +5,7 @@
 <link rel="import" href="say-something.html">
 <link rel="import" href="speech-mic.html">
 <link rel="import" href="display-fact.html">
-<link rel="import" href="display-time.html">
+<link rel="import" href="../alu-charts/chart-donut.html">
 
 
 <dom-module id="simplex-bot">
@@ -60,30 +60,40 @@
       let response = e.detail.value;
       switch (response.type) {
         case 'song':
-
+var v,customElement;
           //entferne
-          let v = this.shadowRoot.querySelector('google-youtube');
+            v = this.shadowRoot.querySelector('google-youtube');
           if (v != undefined) {
             this.$.bot.removeChild(v)
             console.log(v)
           }
-          var customElement = document.createElement('google-youtube');
+           customElement = document.createElement('google-youtube');
           customElement.setAttribute("autoplay", true);
           customElement.setAttribute("video-id", response.msg.id);
           this.$.bot.appendChild(customElement);
           break;
 
+        case 'selbstbehalt':
+          v = this.shadowRoot.querySelector('chart-donut');
+          if (v != undefined) {
+            this.$.bot.removeChild(v)
+            console.log(v)
+          }
+          customElement = document.createElement('chart-donut');
+          this.$.bot.appendChild(customElement);
+          customElement.set("data", response.msg.data);
+          console.log(response.msg.data)
+          this.$.say.set('text', response.msg.text);
+          break;
+
         case 'time':
-          var customElement = document.createElement('display-time');
-          this.$.bot.appendChild(customElement)
-          this.$.say.set('text', response.msg.text)
+
+          this.$.say.set('text', response.msg.text);
           break;
 
         default:
           this.$.say.set('text', response.msg.text)
       }
-
-
 
     }
   }
