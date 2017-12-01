@@ -107,11 +107,16 @@
           break;
 
         case 'selbstbehalt':
-
           customElement = document.createElement('display-donut');
           this.$.bot.appendChild(customElement);
           customElement.set("data", response.msg.data);
+          this.say(response);
+          break;
 
+        case 'fact':
+          customElement = document.createElement('display-fact');
+          this.$.bot.appendChild(customElement);
+          customElement.set("text", response.msg.text);
           this.say(response);
           break;
 
