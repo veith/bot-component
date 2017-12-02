@@ -12,6 +12,7 @@
 <link rel="import" href="display-donut.html">
 <link rel="import" href="display-me.html">
 <link rel="import" href="display-ai.html">
+<link rel="import" href="display-insurance.html">
 
 
 <dom-module id="simplex-bot">
@@ -50,6 +51,7 @@
 
     <div id="bot">
       <div class="placeholder"></div>
+
     </div>
     <div class="input">
       <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
@@ -121,6 +123,12 @@
           customElement = document.createElement('display-fact');
           this.$.bot.appendChild(customElement);
           customElement.set("text", response.msg.text);
+          this.say(response);
+          break;
+
+        case 'thinkinsurance':
+          customElement = document.createElement('display-insurance');
+          this.$.bot.appendChild(customElement);
           this.say(response);
           break;
 

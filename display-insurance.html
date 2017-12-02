@@ -1,0 +1,53 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../flowbased-polymer/mixin.html">
+<link rel="import" href="../google-map/google-map.html">
+<link rel="import" href="../google-map/google-map-marker.html">
+
+<dom-module id="display-insurance">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+      }
+      google-map{
+        height: 300px;
+      }
+
+    </style>
+    <google-map latitude="47.408430511506246" longitude="9.304658655242907" zoom="15"></google-map>
+    <br>
+    Du kannst Syrius bei der Adcubum AG beziehen (4.er Stock rechts).
+
+  </template>
+</dom-module>
+
+
+<script>
+    /**
+     * `display-insurance`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     * @mixes FBPMixin
+     */
+    class DisplayInsurance extends FBPMixin(Polymer.Element) {
+        constructor() {
+            super();
+        }
+
+        static get is() {
+            return 'display-insurance';
+        }
+        static get properties() {
+            return {
+              text:String
+            }
+        }
+    }
+
+    window.customElements.define(DisplayInsurance.is, DisplayInsurance);
+
+</script>

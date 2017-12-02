@@ -8,7 +8,8 @@
     "google-youtube": "^2.0.0",
     "iron-flex-layout": "^2.0.1",
     "paper-input": "^2.0.4",
-    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^2.0.0"
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^2.0.0",
+    "google-map": "GoogleWebComponents/google-map#^2.0.3"
   },
   "devDependencies": {
     "iron-demo-helpers": "^2.0.0",
