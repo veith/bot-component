@@ -3,6 +3,8 @@
 <link rel="import" href="../google-youtube/google-youtube.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+
 <link rel="import" href="bot-component.html">
 <link rel="import" href="say-something.html">
 <link rel="import" href="speech-mic.html">
@@ -51,11 +53,13 @@
     </div>
     <div class="input">
       <speech-mic complete-transcript="{{txt}}" @-speech-mic-result="-texteingabe"></speech-mic>
-      <paper-input class="flex" value="[[txt]]"></paper-input>
+      <paper-input class="flex" value="{{txt}}"></paper-input>
+      <iron-a11y-keys keys="enter" @-keys-pressed="-send(txt)"></iron-a11y-keys>
+
     </div>
 
 
-    <bot-component ƒ-query="-texteingabe" response="{{response}}" on-response-changed="_parse"></bot-component>
+    <bot-component ƒ-query="-texteingabe, -send" response="{{response}}" on-question-sent="_setMyComment" on-response-changed="_parse"></bot-component>
     <say-something id="say"></say-something>
   </template>
 </dom-module>
@@ -152,6 +156,19 @@
           customElement.set("text", response.msg.text);
         }
       }
+    }
+
+    _setMyComment(e){
+      this.myComment(e.detail);
+      this.set('txt','');
+    }
+    myComment(text){
+      let customElement = document.createElement('display-me');
+      this.$.bot.appendChild(customElement);
+      customElement.set("text", text);
+      Polymer.RenderStatus.afterNextRender(this, () => {
+        this.$.bot.scrollTop = this.$.bot.scrollHeight;
+      });
     }
   }
 

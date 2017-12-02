@@ -11,7 +11,7 @@
       }
     </style>
 
-    <iron-ajax id="xhr"  url="http://localhost:4567/api/ask" params="[[params]]"
+    <iron-ajax id="xhr" url="http://localhost:4567/api/ask" params="[[params]]"
                last-response="{{response}}" timeout="2000"></iron-ajax>
   </template>
 
@@ -35,15 +35,27 @@
         return {
           headers: Object,
           params: Object,
-          response:{type:Object, notify:true}
+          response: {type: Object, notify: true}
         }
 
       }
 
-      query(q){
-        this.set('params',{"q":q.completeTranscript});
+      query(q) {
+        if (!q.completeTranscript) {
+          q = {"completeTranscript": q}
+        }
+        this.set('params', {"q": q.completeTranscript});
         this.$.xhr.generateRequest()
+        /**
+         * Fired when
+         * detail payload:
+         * @event question-sent
+         */
+        let customEvent = new Event('question-sent', {composed: true, bubbles: true});
+        customEvent.detail = q.completeTranscript;
+        this.dispatchEvent(customEvent)
       }
+
       ready() {
         super.ready();
       }
